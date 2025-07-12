@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>The Wedding of Hafid & Halizha</title>
+    
+<link rel="shortcut icon" href="https://raw.githubusercontent.com/NFHURO997XXD/image/refs/heads/main/ad.jpeg" type="image/jpeg">
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script&family=Great+Vibes&family=Open+Sans&family=Playfair+Display:wght@500;700&display=swap" rel="stylesheet" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    
+    <style>
+        :root {
+            --primary-color: #c2185b; /* Merah muda keunguan */
+            --secondary-color: #d81b60; /* Merah muda lebih gelap */
+            --text-dark: #444;
+            --text-light: #fff;
+            --bg-light: #fffafa; /* Hampir putih */
+            --border-color: #f8bbd0; /* Merah muda sangat terang */
+            --maroon-soft: #a7418a; /* Maroon lembut */
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body {
+            min-height: 100vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            font-family: 'Open Sans', sans-serif;
+
+            /* UPDATED BACKGROUND GIF */
+            background: url('https://github.com/NFHURO997XXD/image/blob/main/a%20(1).gif?raw=true') no-repeat center center fixed;
+            background-size: cover;
+            background-attachment: fixed;
+
+            scroll-behavior: smooth;
+        }
+        canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none;
+            z-index: 999;
+        }
+        #cover {
+            position: fixed;
+            z-index: 10000;
+            top: 0; left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #fff8f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.2rem;
+            color: #b71c1c;
+            overflow: hidden;
+        }
+        #cover .curtain {
+            position: absolute;
+            top: 0;
+            width: 50vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            box-shadow: inset 0 0 20px rgba(183,28,28,0.6);
+            transition: transform 1.5s ease;
+            z-index: 10001;
+        }
+        #cover .curtain.left {
+            left: 0;
+            border-top-right-radius: 60px;
+            border-bottom-right-radius: 60px;
+            transform: translateX(0);
+        }
+        #cover .curtain.right {
+            right: 0;
+            border-top-left-radius: 60px;
+            border-bottom-left-radius: 60px;
+            transform: translateX(0);
+        }
+        #cover.open .curtain.left {
+            transform: translateX(-100%);
+        }
+        #cover.open .curtain.right {
+            transform: translateX(100%);
+        }
+        #cover-content {
+            position: relative;
+            z-index: 10002;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+            transition: opacity 1.5s ease;
+        }
+        #cover.open #cover-content {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #cover-image {
+            max-width: 180px;
+            height: auto;
+            margin-bottom: 1rem;
+            border-radius: 50%;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        #cover-names {
+            font-family: 'Great Vibes', cursive;
+            font-size: 3.5rem;
+            color: #c2185b;
+            line-height: 1.2;
+            margin-top: 1rem;
+            text-align: center;
+        }
+        #cover-names span {
+            display: block;
+        }
+        #cover-names .ampersand {
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: #a7418a;
+        }
+        #openBtn {
+            background: none;
+            border: none;
+            font-size: 1.3rem;
+            color: #b71c1c;
+            font-family: 'Playfair Display', serif;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 1.5rem;
+        }
+        #openBtn svg {
+            width: 60px;
+            height: 60px;
+            margin-bottom: 1rem;
+            fill: #b71c1c;
+        }
+
+        /* --- Perbaikan Slide Gerak Indah --- */
+        .container {
+            display: flex;
+            overflow-x: hidden; /* Penting untuk menyembunyikan slide di luar layar */
+            width: 100vw;
+            height: 100vh;
+            position: relative; /* Penting untuk posisi slide absolut */
+        }
+
+        .slide {
+            position: absolute; /* Atur slide sebagai posisi absolut */
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+
+            /* Properti animasi default: Semua slide tersembunyi di kanan */
+            transform: translateX(100%); /* Geser ke kanan layar */
+            opacity: 0;
+            visibility: hidden; /* Sembunyikan sepenuhnya saat tidak aktif */
+
+            /* Transisi untuk animasi yang mulus */
+            transition: transform 0.8s ease-in-out, opacity 0.8s ease-in-out, visibility 0.8s;
+        }
+
+        /* Kelas untuk slide yang aktif (sedang ditampilkan) */
+        .slide.active {
+            transform: translateX(0); /* Geser ke tengah layar */
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Kelas untuk slide yang baru saja diganti (keluar ke kiri) */
+        .slide.prev {
+            transform: translateX(-100%); /* Geser ke kiri layar */
+            opacity: 0;
+            visibility: hidden;
+        }
+        /* --- End Perbaikan Slide Gerak Indah --- */
+
+        .content-box {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(6px);
+            border-radius: 20px;
+            padding: 3rem;
+            max-width: 900px;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        h1, h2 {
+            font-family: 'Great Vibes', cursive;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        h1 { font-size: 3rem; }
+        h2 { font-size: 2.5rem; }
+        p {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: var(--text-dark);
+            margin: 0.8rem 0;
+        }
+        .soft-romantic {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.8rem;
+            color: var(--maroon-soft);
+            line-height: 1.4;
+            font-weight: 400;
+            margin: 1rem 0;
+        }
+        .akad-info {
+            font-family: 'Dancing Script', cursive;
+            font-size: 1.6rem;
+            color: var(--maroon-soft);
+            line-height: 1.5;
+            margin: 0.8rem 0;
+        }
+        .arabic-text {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.4rem;
+            color: var(--text-dark);
+            margin-bottom: 1rem;
+            direction: rtl;
+            text-align: center;
+            line-height: 1.8;
+        }
+        .quote {
+            font-style: italic;
+            background: #fff0f6;
+            border-left: 4px solid var(--secondary-color);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            border-radius: 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+        }
+        .footer {
+            font-size: 1.2rem;
+            color: var(--text-dark);
+            padding: 2rem;
+            background-color: rgba(255,255,255,0.6);
+            border-top: 1px solid #ddd;
+            backdrop-filter: blur(3px);
+        }
+
+        /* Floating Icons Container */
+        .floating-icons-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+            z-index: 10010;
+        }
+        .floating-icon {
+            background: #fff0f5;
+            border: 2px solid var(--secondary-color);
+            border-radius: 50%;
+            padding: 15px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .floating-icon:hover {
+            background: #f8bbd0;
+        }
+        .floating-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--secondary-color);
+        }
+
+        /* General Popup Styles */
+        .popup-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.6);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 10020;
+            overflow-y: auto;
+        }
+        .popup-content {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 90%;
+            width: auto;
+            height: auto;
+            max-height: 90vh;
+            text-align: center;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            overflow-y: auto;
+        }
+        .popup-content button.close-btn {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: #aaa;
+            cursor: pointer;
+            line-height: 1;
+        }
+        .popup-content button.close-btn:hover {
+            color: #666;
+        }
+        .popup-content h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 1.8rem;
+        }
+        .popup-content p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+        .popup-content strong {
+            color: var(--secondary-color);
+        }
+        .popup-content img {
+            display: block;
+            margin: 1.5rem auto 0.5rem auto;
+        }
+
+        /* Responsive Video Popup - NEW STYLES */
+        #videoPopup .popup-content {
+            padding: 2rem; /* Adjusted padding for new content */
+            background: #fff; /* Light background for new content */
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            max-width: 500px; /* Smaller max-width for text/button */
+            width: 90%;
+            height: auto;
+            aspect-ratio: auto; /* Remove aspect ratio for new content */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+        /* Remove video player specific styles as video tag is removed */
+        #videoPopup .video-text {
+            font-family: 'Dancing Script', cursive; /* Soft font */
+            font-size: 1.8rem;
+            color: var(--maroon-soft);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+        #videoPopup .youtube-button {
+            background-color: #ff0000; /* YouTube red */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            text-decoration: none; /* Remove underline for link */
+            margin-bottom: 1.5rem; /* Space below button */
+        }
+        #videoPopup .youtube-button:hover {
+            background-color: #cc0000;
+            transform: translateY(-2px);
+        }
+        #videoPopup .youtube-button svg {
+            width: 28px;
+            height: 28px;
+            fill: white;
+        }
+        /* Style for the manual close button inside video popup */
+        #videoPopup .back-to-main-btn {
+            margin-top: 0; /* Adjust margin */
+            margin-bottom: 0; /* Adjust margin */
+            width: auto; /* Allow button to size naturally */
+            max-width: 250px;
+            align-self: center;
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+
+
+        /* Specific styles for Comment Popup - Adjusted for responsiveness */
+        #commentPopup .popup-content {
+            padding: 0;
+            background: transparent;
+            box-shadow: none;
+            max-width: 750px;
+            width: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: visible; /* Penting agar shadow dari inner container bisa terlihat */
+            margin: 20px;
+        }
+
+        /* Styles for the inner comment form container */
+        .comment-form-container {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.98);
+            padding: 35px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-sizing: border-box;
+            color: var(--text-dark);
+            max-height: 85vh; /* Limit height to prevent content from going off screen */
+            overflow-y: auto; /* Enable scrolling for the form content itself */
+        }
+
+        /* Specific styles for elements within the comment form */
+        .comment-form-container h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-size: 2.8em;
+            margin-bottom: 25px;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.08);
+            line-height: 1.2;
+        }
+        .comment-form-container .intro-text {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.1em;
+            margin-bottom: 35px;
+            color: var(--text-dark);
+            line-height: 1.7;
+            padding: 0 15px;
+        }
+        .comment-form-container .form-group {
+            margin-bottom: 25px;
+            text-align: left;
+        }
+        .comment-form-container label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--primary-color);
+            font-size: 1.05em;
+        }
+        .comment-form-container input[type="text"],
+        .comment-form-container textarea {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1em;
+            color: var(--text-dark);
+            background-color: var(--bg-light);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .comment-form-container input[type="text"]:focus,
+        .comment-form-container textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 8px rgba(221, 160, 221, 0.6);
+        }
+        .comment-form-container textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+        .comment-form-container button {
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 1.2em;
+            font-weight: bold;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .comment-form-container button:hover {
+            background-color: #FFB6C1;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+        }
+        .comment-form-container .ucapan-list {
+            margin-top: 50px;
+            border-top: 1px dotted var(--border-color);
+            padding-top: 35px;
+            text-align: left;
+        }
+        .comment-form-container .ucapan-list h3 {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            font-size: 2.2em;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .comment-form-container .ucapan-item {
+            background-color: var(--bg-light);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.05);
+            position: relative;
+            overflow: hidden;
+        }
+        .comment-form-container .ucapan-item::before {
+            content: "“";
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            color: var(--maroon-soft);
+            position: absolute;
+            top: -10px;
+            left: 10px;
+            z-index: 0;
+            opacity: 0.8;
+        }
+        .comment-form-container .ucapan-item::after {
+            content: "”";
+            font-family: 'Playfair Display', serif;
+            font-size: 4em;
+            color: var(--maroon-soft);
+            position: absolute;
+            bottom: -25px;
+            right: 10px;
+            z-index: 0;
+            opacity: 0.8;
+        }
+        .comment-form-container .ucapan-item strong {
+            font-family: 'Playfair Display', serif;
+            color: var(--primary-color);
+            display: block;
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            position: relative;
+            z-index: 1;
+        }
+        .comment-form-container .ucapan-item p {
+            font-family: 'Open Sans', sans-serif;
+            font-size: 1.05em;
+            color: var(--text-dark);
+            line-height: 1.7;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 1;
+        }
+        .comment-form-container .ucapan-item .time {
+            font-size: 0.85em;
+            color: var(--text-dark);
+            margin-top: 10px;
+            display: block;
+            text-align: right;
+            position: relative;
+            z-index: 1;
+            font-style: italic;
+        }
+        .comment-form-container #emptyMessage {
+            text-align: center;
+            color: var(--primary-color);
+            font-style: italic;
+            margin-top: 20px;
+            font-size: 1.05em;
+            font-family: 'Playfair Display', serif;
+        }
+
+        /* Back Button general style (reused for manual close video) */
+        .back-to-main-btn {
+            background-color: #9c27b0; /* Warna ungu */
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+        }
+        .back-to-main-btn:hover {
+            background-color: #7b1fa2;
+            transform: translateY(-2px);
+        }
+
+        /* --- Media Queries untuk Responsif --- */
+        @media (max-width: 768px) {
+            /* MENGHAPUS PENYESUAIAN BACKGROUND KHUSUS HP (KEMBALI KE DEFAULT 'COVER') */
+            /* body {
+                background-size: contain;
+                background-color: #f8bbd0;
+                background-repeat: no-repeat;
+                background-position: center center;
+            } */
+
+            .content-box {
+                padding: 2rem 1.5rem;
+                max-width: 95%;
+            }
+            h1 { font-size: 2.5rem; }
+            h2 { font-size: 2rem; }
+            p, .quote, .soft-romantic, .akad-info {
+                font-size: 1.2rem;
+            }
+            .akad-info {
+                font-size: 1.4rem;
+            }
+            .floating-icons-container {
+                bottom: 15px;
+                right: 15px;
+                gap: 8px;
+            }
+            .floating-icon {
+                padding: 12px;
+            }
+            .floating-icon svg {
+                width: 28px;
+                height: 28px;
+            }
+            #cover-image {
+                max-width: 150px;
+            }
+            #cover-names {
+                font-size: 3rem;
+            }
+            #cover-names .ampersand {
+                font-size: 2rem;
+            }
+            .arabic-text {
+                font-size: 1.2rem;
+            }
+
+            /* Comment Form Responsiveness for smaller screens */
+            #commentPopup .popup-content {
+                width: 95%;
+                margin: 10px;
+            }
+            .comment-form-container {
+                padding: 25px 20px;
+                max-height: 88vh;
+            }
+            .comment-form-container h2 {
+                font-size: 2.2em;
+            }
+            .comment-form-container .intro-text {
+                font-size: 1em;
+            }
+            .comment-form-container button {
+                font-size: 1.1em;
+                padding: 12px 20px;
+            }
+            .comment-form-container .ucapan-list h3 {
+                font-size: 1.8em;
+            }
+            .comment-form-container .ucapan-item {
+                padding: 20px;
+            }
+            .comment-form-container .ucapan-item strong {
+                font-size: 1.1em;
+            }
+            .comment-form-container .ucapan-item p {
+                font-size: 0.95em;
+            }
+            .comment-form-container .ucapan-item .time {
+                font-size: 0.8em;
+            }
+            /* Video Popup Responsive */
+            #videoPopup .popup-content {
+                width: 95%;
+                padding: 1.5rem; /* Adjust padding for smaller screens */
+            }
+             #videoPopup .youtube-button {
+                font-size: 1em;
+                padding: 10px 20px;
+                gap: 8px;
+            }
+            #videoPopup .youtube-button svg {
+                width: 24px;
+                height: 24px;
+            }
+             #videoPopup .back-to-main-btn {
+                font-size: 0.9em;
+                padding: 8px 15px;
+                margin-top: 10px;
+                margin-bottom: 10px;
+                max-width: 200px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            /* Comment Form Responsiveness for mobile */
+            #commentPopup .popup-content {
+                width: 98%;
+                margin: 5px;
+            }
+            .comment-form-container {
+                padding: 18px 15px;
+                border-radius: 15px;
+                max-height: 90vh;
+            }
+            .comment-form-container h2 {
+                font-size: 1.8em;
+            }
+            .comment-form-container .intro-text {
+                font-size: 0.95em;
+                margin-bottom: 25px;
+                padding: 0 5px;
+            }
+            .comment-form-container label {
+                font-size: 1em;
+                margin-bottom: 8px;
+            }
+            .comment-form-container input[type="text"],
+            .comment-form-container textarea {
+                padding: 10px;
+                border-radius: 8px;
+            }
+            .comment-form-container textarea {
+                min-height: 100px;
+            }
+            .comment-form-container button {
+                font-size: 1em;
+                padding: 10px 15px;
+                border-radius: 8px;
+            }
+            .comment-form-container .ucapan-list {
+                margin-top: 30px;
+                padding-top: 25px;
+            }
+            .comment-form-container .ucapan-list h3 {
+                font-size: 1.6em;
+                margin-bottom: 20px;
+            }
+            .comment-form-container .ucapan-item {
+                padding: 15px;
+                margin-bottom: 12px;
+                border-radius: 10px;
+            }
+            .comment-form-container .ucapan-item strong {
+                font-size: 1em;
+            }
+            .comment-form-container .ucapan-item p {
+                font-size: 0.9em;
+            }
+            .comment-form-container .ucapan-item::before, .comment-form-container .ucapan-item::after {
+                font-size: 2.5em;
+            }
+            .comment-form-container #emptyMessage {
+                font-size: 0.95em;
+            }
+             #videoPopup .back-to-main-btn {
+                font-size: 0.85em;
+                padding: 6px 12px;
+                margin-top: 8px;
+                margin-bottom: 8px;
+                max-width: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div id="cover">
+    <div class="curtain left"></div>
+    <div class="curtain right"></div>
+    <div id="cover-content">
+        <img src="https://raw.githubusercontent.com/NFHURO997XXD/image/refs/heads/main/Pasangan_cadar-removebg-preview.png" alt="Pasangan Pengantin" id="cover-image">
+        <div id="cover-names">
+            <span>Hafid</span>
+            <span class="ampersand">&</span>
+            <span>Halizha</span>
+        </div>
+        <button id="openBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+                <path d="M48 16c-4 0-9 3-12 7-3-3-8-7-12-7-6 0-14 14-14 22 0 7 8 14 16 14 5 0 9-3 12-7 3 4 7 7 12 7 8 0 16-7 16-14 0-8-8-22-14-22z"/>
+            </svg>
+            Klik untuk membuka tirai wedding
+        </button>
+    </div>
+</div>
+
+<canvas id="snowCanvas"></canvas>
+<audio id="bgMusic" loop>
+    <source src="https://orcinus.in/assets/a.mp3" type="audio/mpeg" />
+</audio>
+
+<div class="container" id="slide-container">
+    <section class="slide" data-aos="fade-down"><div class="content-box"><h1>The Wedding of<br><br>Hafid & Halizha</h1></div></section>
+    <section class="slide" data-aos="fade-in"><div class="content-box">
+        <p class="soft-romantic"><strong>Hafid Fajar</strong><br />Putra pertama dari Bapak Turijan & Ibu Neneng Tulustiyah</p>
+        <p class="soft-romantic"><strong>Siti Nurhalizha R. Basila</strong><br />Putri kedua dari Bapak Rusdin M. Basila & Ibu Arsiah</p>
+    </div></section>
+    <section class="slide" data-aos="fade-up"><div class="content-box">
+        <h2>Akad:</h2>
+        <p class="akad-info"><strong>Hari:</strong> Kamis</p>
+        <p class="akad-info"><strong>Tanggal:</strong> 14 Agustus 2025</p>
+        <p class="akad-info"><strong>Waktu:</strong> Pukul 08:00 WITA</p>
+        <p class="akad-info"><strong>Tempat:</strong><br />Jl. Lorong Pondok Pesantren Al-Fatah 2 Putri,<br />Gang Masjid, Dusun 4, Kelurahan Sidomukti</p>
+    </div></section>
+    <section class="slide" data-aos="zoom-in"><div class="content-box">
+        <p class="arabic-text">وَمِنْ اٰيٰتِهٖٓ اَنْ خَلَقَ لَكُمْ مِّنْ اَنْفُسِكُمْ اَزْوَاجًا لِّتَسْكُنُوْٓا اِلَيْهَا وَجَعَلَ بَيْنَكُمْ مَّوَدَّةً وَّرَحْمَةًۗ اِنَّ فِيْ ذٰلِكَ لَاٰيٰتٍ لِّقَوْمٍ يَّتَفَكَّرُوْنَ ۝٢١</p>
+        <div class="quote">
+            "Dan di antara tanda-tanda kekuasaan-Nya ialah Dia menciptakan untukmu pasangan dari jenismu sendiri..."
+            <br /><strong>– QS. Ar-Rum: 21</strong>
+        </div>
+    </div></section>
+    <section class="slide" data-aos="fade-up"><div class="content-box">
+        <div class="quote">
+            “Ya Allah, berkahilah mereka dalam kehidupannya, dan satukanlah mereka dalam kebaikan...”
+        </div>
+    </div></section>
+    <section class="slide" data-aos="fade-in"><div class="content-box footer">
+        Dengan penuh cinta dan harapan,<br />Kami menanti kehadiran dan doa restu dari Bapak/Ibu/Saudara/i.<br /><br />Wassalamu’alaikum warahmatullahi wabarakatuh.
+    </div></section>
+</div>
+
+<div class="floating-icons-container" style="display: none;">
+    <a href="https://maps.app.goo.gl/BNQkpSXJPWB9FCZ57" target="_blank" class="floating-icon" id="openLocation" title="Lihat Lokasi">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5S13.38 11.5 12 11.5z"/>
+        </svg>
+    </a>
+    
+    <div class="floating-icon" id="openVideoPopup" title="Putar Video">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+        </svg>
+    </div>
+    <div class="floating-icon" id="openGiftPopup" title="Buka halaman hadiah">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M50 12h-5.7c1-1.2 1.7-2.7 1.7-4.3C46 4.3 43.7 2 41 2c-2.2 0-4.3 1.6-6.1 4.2C32.1 3.6 30 2 28 2c-2.8 0-5 2.3-5 5.7 0 1.6.6 3.1 1.7 4.3H20c-2.2 0-4 1.8-4 4v6h12v-6c0-1.1.9-2 2-2s2 .9 2 2v6h12v-6c0-2.2-1.8-4-4-4z"/><path d="M12 24h40v36H12z"/></svg>
+    </div>
+    <div class="floating-icon" id="openCommentPopup" title="Buka buku tamu & komentar">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M21.99 4c0-1.1-.89-2-1.99-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14l4 4-.01-18zM20 16H4V4h16v12z"/>
+        </svg>
+    </div>
+</div>
+
+<div class="popup-overlay" id="giftPopup">
+    <div class="popup-content">
+        <button class="close-btn" id="closeGiftPopup" aria-label="Tutup popup hadiah">×</button>
+        <h3>Kado Digital</h3>
+        <p>💳 No. Rekening: <strong>1870656749</strong></p>
+        <p><strong>Bank BCA</strong> a.n. Hafid Fajar</p>
+        <hr style="margin: 1rem 0; border: none; border-top: 1px solid #ddd;" />
+        <p>Atau scan Gopay berikut:</p>
+        <img src="https://raw.githubusercontent.com/NFHURO997XXD/image/refs/heads/main/qr.jpg" alt="QR Gopay Hafid" style="max-width: 180px; border-radius: 8px;" />
+    </div>
+</div>
+
+<div class="popup-overlay" id="videoPopup">
+    <div class="popup-content">
+        <button class="close-btn" id="closeVideoPopup" aria-label="Tutup popup video">×</button>
+        
+        <p class="video-text">Klik tombol di bawah untuk melihat versi video</p>
+        <a href="https://youtube.com/shorts/W2JevIea72Y?feature=share" target="_blank" class="youtube-button">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+            </svg>
+            Tonton di YouTube
+        </a>
+
+        <button class="back-to-main-btn" id="manualCloseVideoBtn">Kembali ke Undangan</button>
+    </div>
+</div>
+
+<div class="popup-overlay" id="commentPopup">
+    <div class="popup-content">
+        <button class="close-btn" id="closeCommentPopup" aria-label="Tutup popup komentar">×</button>
+        <div id="commentFormContainer" class="comment-form-container">
+        </div>
+    </div>
+</div>
+
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    AOS.init();
+    const container = document.getElementById('slide-container');
+    const slides = Array.from(container.children); // Mengambil semua elemen slide
+    const totalSlides = slides.length;
+    let currentIndex = 0;
+    let intervalId;
+
+    // Fungsi untuk menampilkan slide berdasarkan indeks
+    function goToSlide(index) {
+        // Hapus kelas 'active' dan 'prev' dari semua slide
+        slides.forEach((slide, i) => {
+            slide.classList.remove('active', 'prev');
+            // Untuk slide yang tidak aktif, pastikan posisinya benar sebelum disembunyikan
+            if (i !== index) {
+                slide.style.transform = 'translateX(100%)';
+                slide.style.opacity = '0';
+                slide.style.visibility = 'hidden';
+            }
+        });
+
+        // Tambahkan kelas 'active' ke slide saat ini
+        slides[index].classList.add('active');
+        slides[index].style.transform = 'translateX(0)'; // Pastikan posisi aktif
+        slides[index].style.opacity = '1';
+        slides[index].style.visibility = 'visible';
+
+        // Jika ada slide sebelumnya yang perlu digeser keluar
+        const prevIndex = (index - 1 + totalSlides) % totalSlides;
+        if (prevIndex !== index) { // Pastikan bukan slide yang sama
+            slides[prevIndex].classList.add('prev');
+            // Timeout untuk menghapus 'prev' setelah transisi selesai, mencegah konflik
+            setTimeout(() => {
+                slides[prevIndex].classList.remove('prev');
+                slides[prevIndex].style.transform = 'translateX(100%)'; // Reset ke kanan
+                slides[prevIndex].style.opacity = '0';
+                slides[prevIndex].style.visibility = 'hidden';
+            }, 800); // Sesuaikan dengan durasi transisi CSS (0.8s)
+        }
+
+        currentIndex = index; // Perbarui currentIndex
+    }
+
+    // Fungsi untuk memulai slideshow otomatis
+    function startSlideShow() {
+        intervalId = setInterval(() => {
+            const nextIndex = (currentIndex + 1) % totalSlides;
+            goToSlide(nextIndex);
+        }, 5000); // Ganti durasi jika diperlukan (5 detik)
+    }
+
+    const canvas = document.getElementById('snowCanvas');
+    const ctx = canvas.getContext('2d');
+    let width, height;
+    let snowflakes = [];
+
+    function initCanvas() {
+        width = window.innerWidth;
+        height = window.innerHeight;
+        canvas.width = width;
+        canvas.height = height;
+    }
+
+    function createSnowflakes() {
+        snowflakes = [];
+        for (let i = 0; i < 100; i++) {
+            snowflakes.push({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 3 + 1,
+                speedY: Math.random() * 1 + 0.5,
+                speedX: Math.random() * 0.5 - 0.25,
+                opacity: Math.random() * 0.5 + 0.3
+            });
+        }
+    }
+
+    function drawSnowflakes() {
+        ctx.clearRect(0, 0, width, height);
+        ctx.fillStyle = 'white';
+        ctx.beginPath();
+        for (let flake of snowflakes) {
+            ctx.moveTo(flake.x, flake.y);
+            ctx.arc(flake.x, flake.y, flake.radius, 0, Math.PI * 2);
+        }
+        ctx.fill();
+    }
+
+    function updateSnowflakes() {
+        for (let flake of snowflakes) {
+            flake.y += flake.speedY;
+            flake.x += flake.speedX;
+            if (flake.y > height) {
+                flake.y = -flake.radius;
+                flake.x = Math.random() * width;
+            }
+            if (flake.x > width) flake.x = width;
+            else if (flake.x < 0) flake.x = 0;
+        }
+    }
+
+    function loop() {
+        updateSnowflakes();
+        drawSnowflakes();
+        requestAnimationFrame(loop);
+    }
+
+    window.addEventListener('resize', () => {
+        initCanvas();
+        createSnowflakes();
+    });
+
+    initCanvas();
+    createSnowflakes();
+    loop();
+
+    const cover = document.getElementById('cover');
+    const openBtn = document.getElementById('openBtn');
+    const bgMusic = document.getElementById('bgMusic');
+    const floatingIconsContainer = document.querySelector('.floating-icons-container');
+
+    // Inisialisasi awal: Sembunyikan semua slide dan atur posisi default
+    slides.forEach(slide => {
+        slide.style.transform = 'translateX(100%)';
+        slide.style.opacity = '0';
+        slide.style.visibility = 'hidden';
+    });
+
+    openBtn.addEventListener('click', () => {
+        cover.classList.add('open');
+        bgMusic.play();
+        setTimeout(() => {
+            cover.style.display = 'none';
+            document.body.style.overflow = 'auto'; // Mengizinkan scrolling setelah cover hilang
+            currentIndex = 0; // Pastikan indeks awal
+            goToSlide(0); // Tampilkan slide pertama dengan animasi
+            startSlideShow();
+            floatingIconsContainer.style.display = 'flex';
+        }, 1600); // Sesuaikan dengan durasi animasi tirai
+    });
+
+    // Gift popup handlers
+    const giftBtn = document.getElementById('openGiftPopup');
+    const giftPopup = document.getElementById('giftPopup');
+    const closeGiftPopup = document.getElementById('closeGiftPopup');
+
+    giftBtn.addEventListener('click', () => giftPopup.style.display = 'flex');
+    closeGiftPopup.addEventListener('click', () => giftPopup.style.display = 'none');
+
+    // Video popup handlers
+    const openVideoPopupBtn = document.getElementById('openVideoPopup');
+    const videoPopup = document.getElementById('videoPopup');
+    const closeVideoPopupBtn = document.getElementById('closeVideoPopup');
+    const manualCloseVideoBtn = document.getElementById('manualCloseVideoBtn');
+
+    openVideoPopupBtn.addEventListener('click', () => {
+        videoPopup.style.display = 'flex';
+    });
+
+    closeVideoPopupBtn.addEventListener('click', () => {
+        videoPopup.style.display = 'none';
+    });
+
+    manualCloseVideoBtn.addEventListener('click', () => {
+        videoPopup.style.display = 'none';
+    });
+</script>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getFirestore, collection, addDoc, query, orderBy, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBy-mATj5-Z3oJhoiZswff7bxO-4MVrdzw",
+        authDomain: "undanganhafidhalizhabaru.firebaseapp.com",
+        projectId: "undanganhafidhalizhabaru",
+        storageBucket: "undanganhafidhalizhabaru.firebasestorage.app",
+        messagingSenderId: "289788785233",
+        appId: "1:289788785233:web:7d34165a354e17dfc6be70"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app); // Firestore instance
+
+    // Comment popup handlers and related functions (MOVED HERE)
+    const openCommentPopupBtn = document.getElementById('openCommentPopup');
+    const commentPopup = document.getElementById('commentPopup');
+    const closeCommentPopupBtn = document.getElementById('closeCommentPopup');
+    const commentFormContainer = document.getElementById('commentFormContainer');
+
+    // Variable to store the unsubscribe function for the Firestore listener
+    let commentSnapshotListener = null;
+
+    function fetchAndDisplayComments() {
+        const daftarUcapanDiv = commentFormContainer.querySelector('#daftarUcapan');
+        const emptyMessage = commentFormContainer.querySelector('#emptyMessage');
+
+        // Unsubscribe from listener before setting a new one
+        if (commentSnapshotListener) {
+            commentSnapshotListener();
+        }
+
+        function addUcapanToDOM(nama, isi, timestamp) {
+            const ucapanItem = document.createElement('div');
+            ucapanItem.classList.add('ucapan-item');
+
+            const namaElement = document.createElement('strong');
+            namaElement.textContent = nama;
+
+            const isiElement = document.createElement('p');
+            isiElement.innerHTML = isi.replace(/\n/g, '<br>'); // Preserve newlines from textarea
+
+            const timeElement = document.createElement('span');
+            timeElement.classList.add('time');
+            const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+            timeElement.textContent = `Tertulis pada: ${timestamp.toLocaleDateString('id-ID', options)}`;
+
+            ucapanItem.appendChild(namaElement);
+            ucapanItem.appendChild(isiElement);
+            ucapanItem.appendChild(timeElement);
+
+            const h3Title = daftarUcapanDiv.querySelector('.ucapan-list h3');
+            if (h3Title && h3Title.nextElementSibling) {
+                daftarUcapanDiv.insertBefore(ucapanItem, h3Title.nextElementSibling);
+            } else {
+                daftarUcapanDiv.appendChild(ucapanItem);
+            }
+        }
+
+        function toggleEmptyMessage() {
+            const actualUcapanItems = Array.from(daftarUcapanDiv.children).filter(
+                node => node.classList.contains('ucapan-item')
+            );
+            if (actualUcapanItems.length === 0) {
+                emptyMessage.style.display = 'block';
+            } else {
+                emptyMessage.style.display = 'none';
+            }
+        }
+
+        commentSnapshotListener = onSnapshot(
+            query(
+                collection(db, 'ucapan'),
+                orderBy('timestamp', 'desc')
+            ),
+            (snapshot) => {
+                daftarUcapanDiv.querySelectorAll('.ucapan-item').forEach(item => item.remove());
+                snapshot.forEach((doc) => {
+                    const data = doc.data();
+                    const timestamp = data.timestamp instanceof Timestamp ? data.timestamp.toDate() : new Date();
+                    addUcapanToDOM(data.nama, data.isi, timestamp);
+                });
+                toggleEmptyMessage();
+            }, (error) => {
+                console.error("Error mendapatkan dokumen: ", error);
+                alert("Maaf, ada masalah saat memuat daftar doa. Coba lagi nanti.");
+            });
+    }
+
+    async function loadCommentForm() {
+        const commentHtml = `
+            <div class="comment-form-inner-wrapper">
+                <button class="back-to-main-btn" id="backToMainBtn">Kembali ke Undangan</button>
+                <h2>Untaian Doa & Restu</h2>
+                <p class="intro-text">
+                    Dalam harmoni cinta yang bersemi, setiap doa dan harapan tulus dari Anda adalah permata berharga bagi perjalanan indah pasangan mempelai. Mari satukan hati dalam untaian kata penuh kasih.
+                </p>
+
+                <div class="form-group">
+                    <label for="namaPengucap">Nama Indah Anda:</label>
+                    <input type="text" id="namaPengucap" placeholder="Misalnya: Keluarga Bahagia, Sahabat Sejati" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="isiUcapan">Doa & Harapan Tulus Anda:</label>
+                    <textarea id="isiUcapan" placeholder="Curahkan kata-kata cinta dan restu Anda di sini..." required></textarea>
+                </div>
+
+                <button id="kirimUcapan">Kirim Doa Restu Penuh Cinta</button>
+
+                <div class="ucapan-list" id="daftarUcapan">
+                    <h3>Untaian Doa yang Terukir</h3>
+                    <p id="emptyMessage">Belum ada untaian doa yang terukir. Jadilah yang pertama yang menebarkan cinta!</p>
+                </div>
+            </div>
+        `;
+
+        commentFormContainer.innerHTML = commentHtml;
+
+        // Attach event listeners AFTER content is loaded
+        attachCommentFormListeners();
+        fetchAndDisplayComments(); 
+    }
+
+    function attachCommentFormListeners() {
+        const namaPengucapInput = commentFormContainer.querySelector('#namaPengucap');
+        const isiUcapanInput = commentFormContainer.querySelector('#isiUcapan');
+        const kirimUcapanBtn = commentFormContainer.querySelector('#kirimUcapan');
+        const backToMainBtn = commentFormContainer.querySelector('#backToMainBtn');
+
+        backToMainBtn.addEventListener('click', () => {
+            commentPopup.style.display = 'none';
+            commentFormContainer.innerHTML = '';
+            if (commentSnapshotListener) {
+                commentSnapshotListener();
+                commentSnapshotListener = null;
+            }
+        });
+
+        kirimUcapanBtn.addEventListener('click', async function() {
+            const nama = namaPengucapInput.value.trim();
+            const ucapan = isiUcapanInput.value.trim();
+
+            if (nama === '' || ucapan === '') {
+                alert('Mohon isi nama dan doa Anda ya, agar cinta Anda tersampaikan!');
+                return;
+            }
+
+            const currentTime = new Date();
+
+            try {
+                await addDoc(collection(db, 'ucapan'), {
+                    nama: nama,
+                    isi: ucapan,
+                    timestamp: Timestamp.fromDate(currentTime)
+                });
+
+                namaPengucapInput.value = '';
+                isiUcapanInput.value = '';
+                alert('Doa restu Anda telah terkirim dengan indah!');
+            } catch (error) {
+                console.error("Error menulis dokumen: ", error);
+                alert('Maaf, ada masalah saat mengirim doa restu Anda. Coba lagi nanti.');
+            }
+        });
+    }
+
+    // Attach event listeners for opening/closing comment popup after DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        openCommentPopupBtn.addEventListener('click', () => {
+            commentPopup.style.display = 'flex';
+            loadCommentForm();
+        });
+
+        closeCommentPopupBtn.addEventListener('click', () => {
+            commentPopup.style.display = 'none';
+            commentFormContainer.innerHTML = ''; // Clear content when closing
+            if (commentSnapshotListener) {
+                commentSnapshotListener(); // Call the unsubscribe function
+                commentSnapshotListener = null; // Clear the reference
+            }
+        });
+    });
+</script>
+</body>
+</html>
